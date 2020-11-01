@@ -6,7 +6,6 @@
         $password = trim(htmlentities($_POST['password']));
         $email = trim(htmlentities($_POST['email']));
 
-
         require("user.php");
 
         $obj = new User;
@@ -14,10 +13,8 @@
         $obj->login($password,$email);
 
 
-
-
     } else {
-        header("location: register.php?status='loginfail'");
+        header("location: login.php?status='loginfail'");
     }
 
     

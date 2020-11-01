@@ -43,14 +43,13 @@
                             <h3 class="text-primary">Login</h3>
                             <hr>
                             <div class="form-group">
-                                <label for="exampleInputEmail1">Email address</label>
-                                <input type="email" class="form-control" id="exampleInputEmail1"
-                                    aria-describedby="emailHelp">
+                                <label for="email">Email address</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
                                 
                             </div>
                             <div class="form-group">
-                                <label for="exampleInputPassword1">Password</label>
-                                <input type="password" class="form-control" id="exampleInputPassword1">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
                             </div>
                             
                             <button type="submit" class="btn btn-primary">Submit</button>
