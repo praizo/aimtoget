@@ -8,15 +8,31 @@
 
     $res = new File;
 
-    $lists  = $res->listFilesPublic();
+    
 
-    // print_r($list);
+    if (isset($_GET['id']) and !isset($_SESSION['user'])) {
 
+        $viewuserfiles = $res->viewuser($_GET['id']);
 
-    if (isset($_SESSION['user'])) {
-       
+    }elseif (isset($_GET['id']) and isset($_SESSION['user']) !== isset($_GET['id'])) {
+
+        $viewuserfiles = $res->viewuser($_GET['id']);
+
+    }elseif (isset($_SESSION['user']) || isset($_SESSION['user']) == (isset($_GET['id']))) {
+
+        $personalFiles  = $res->personalFiles($_SESSION['user']);
+
         $detail = $obj->getDetail($_SESSION['user']);
+
+        $privatefiles = $res->displayprivateFiles($_SESSION['user']);
+        if (isset($_GET['id'])) {
+            $viewuserfiles = $res->viewuser($_GET['id']);
+        }
+
         
+    } else{
+
+        header("location: index.php");
     }
 
 ?>
@@ -115,10 +131,15 @@
                     <?php } ?>
 
                 </div>
+                
             </div>
-            <div class="col-10 mx-auto">
+           
 
-                <?php if (!empty($lists)) { ?>
+            <div class="col-10 mx-auto">
+                <?php if (isset($_GET['id']) and !isset($_SESSION['user'])) {?>
+                <?php if (!empty($viewuserfiles)) { ?>
+                <h3 class="mt-5">Personal Files</h3>
+
                 <table class="table table-striped table-bordered ">
                     <thead>
                         <tr>
@@ -132,22 +153,127 @@
                     <tbody>
                         <?php                     
                         
-                        foreach ($lists as $key => $list) {?>
+                        foreach ($viewuserfiles as $key => $viewuserfile) {?>
                         <tr>
                             <th scope="row">1</th>
-                            <td><?php echo ucfirst($list['firstname'] . ' ' . ucfirst($list['lastname'])) ?></td>
-                            <td><?php echo ucfirst($list['file_format']) ?></td>
+                            <td><?php echo ucfirst($viewuserfile['firstname'] . ' ' . ucfirst($viewuserfile['lastname'])) ?>
+                            </td>
+                            <td><?php echo ucfirst($viewuserfile['file_format']) ?></td>
                             <td>
-                                <span class="badge badge-info"><?php echo ucfirst($list['file_type']) ?></span>
+                                <span class="badge badge-info p-1
+                                <?php
+                                    if ($viewuserfile['file_type'] == 'private') {
+                                        echo 'badge-warning';
+                                    }else {
+                                        echo 'badge-info';
+                                    }
+                                ?>
+                                
+                                "><?php echo ucfirst($viewuserfile['file_type']) ?></span>
                             </td>
                             <td>
-                                <a href="downloadflow.php?location=<?php echo $list["file_location"]?>"
+                                <a href="downloadflow.php?location=<?php echo $viewuserfile["file_location"]?>"
                                     onclick="return confirm('Are you sure?')" class="btn btn-success">Download</a>
-                                <?php if(isset($_SESSION['user'])) {?>
+                                
+                            </td>
+                        </tr>
 
-                                <a href="deleteflow.php?id=<?php echo $list['id'] ?>&location=<?php echo $list["file_location"]?>"
-                                    onclick="return confirm('Are you sure?')" class="btn btn-outline-danger">Delete</a>
-                                <?php }?>
+                        <?php } ?>
+
+
+                    </tbody>
+                </table>
+
+                <?php } else{?>
+
+                <div class="alert alert-primary" role="alert">
+                    No file available
+                </div>
+                <?php }}elseif (isset($_GET['id']) and $_SESSION['user'] !== ($_GET['id'])) {?>
+                <?php if (!empty($viewuserfiles)) { ?>
+                <h3 class="mt-5">Personal Files</h3>
+
+                <table class="table table-striped table-bordered ">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Author</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Status</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php                     
+                        
+                        foreach ($viewuserfiles as $key => $viewuserfile) {?>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td> <?php echo ucfirst($viewuserfile['firstname'] . ' ' . ucfirst($viewuserfile['lastname'])) ?>
+                            </td>
+                            <td><?php echo ucfirst($viewuserfile['file_format']) ?></td>
+                            <td>
+                                <span class="badge badge-info p-1
+                                <?php
+                                    if ($viewuserfile['file_type'] == 'private') {
+                                        echo 'badge-warning';
+                                    }else {
+                                        echo 'badge-info';
+                                    }
+                                ?>
+                                
+                                "><?php echo ucfirst($viewuserfile['file_type']) ?></span>
+                            </td>
+                            <td>
+                                <a href="downloadflow.php?location=<?php echo $viewuserfile["file_location"]?>"
+                                    onclick="return confirm('Are you sure?')" class="btn btn-success">Download</a>
+                               
+                            </td>
+                        </tr>
+
+                        <?php } ?>
+
+
+                    </tbody>
+                </table>
+
+                <?php } else{?>
+
+                <div class="alert alert-primary" role="alert">
+                    No file available
+                </div>
+
+
+                <?php }}elseif(isset($_SESSION['user']) || $_SESSION['user'] == $_GET['id']){ ?>
+                <h3>Private Files</h3>
+                <?php if (!empty($privatefiles)) { ?>
+                <table class="table table-striped table-bordered ">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Author</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Status</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php                     
+                        
+                        foreach ($privatefiles as $key => $privatefile) {?>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td><?php echo ucfirst($privatefile['firstname'] . ' ' . ucfirst($privatefile['lastname'])) ?>
+                            </td>
+                            <td><?php echo ucfirst($privatefile['file_format']) ?></td>
+                            <td>
+                                <span
+                                    class="badge badge-warning"><?php echo ucfirst($privatefile['file_type']) ?></span>
+                            </td>
+                            <td>
+                                <a href="downloadflow.php?location=<?php echo $privatefile["file_location"]?>"
+                                    onclick="return confirm('Are you sure?')" class="btn btn-success">Download</a>
+
                             </td>
                         </tr>
 
@@ -164,7 +290,70 @@
                 </div>
                 <?php }?>
 
-                
+
+
+                <?php if (!empty($personalFiles)) { ?>
+                <h3 class="mt-5">Personal Files</h3>
+
+                <table class="table table-striped table-bordered ">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Author</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Status</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php                     
+                        
+                        foreach ($personalFiles as $key => $personalFile) {?>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td><?php echo ucfirst($personalFile['firstname'] . ' ' . ucfirst($personalFile['lastname'])) ?>
+                            </td>
+                            <td><?php echo ucfirst($personalFile['file_format']) ?></td>
+                            <td>
+                                <span class="badge badge-info p-1
+                                <?php
+                                    if ($personalFile['file_type'] == 'private') {
+                                        echo 'badge-warning';
+                                    }else {
+                                        echo 'badge-info';
+                                    }
+                                ?>
+                                
+                                "><?php echo ucfirst($personalFile['file_type']) ?></span>
+                            </td>
+                            <td>
+                                <a href="downloadflow.php?location=<?php echo $personalFile["file_location"]?>"
+                                    onclick="return confirm('Are you sure?')" class="btn btn-success">Download</a>
+                                <?php if(isset($_SESSION['user'])) {?>
+
+                                <a href="edit.php?id=<?php echo $personalFile['id']; ?>"
+                                    class="btn btn-outline-info">Edit</a>
+
+                                <a href="deleteflow.php?id=<?php echo $personalFile['id'] ?>&location=<?php echo $personalFile["file_location"]?>"
+                                    onclick="return confirm('Are you sure?')" class="btn btn-outline-danger">Delete</a>
+
+
+                                <?php }?>
+                            </td>
+                        </tr>
+
+                        <?php } ?>
+
+
+                    </tbody>
+                </table>
+
+                <?php } else{?>
+
+                <div class="alert alert-primary" role="alert">
+                    No file available
+                </div>
+                <?php }}?>
 
             </div>
         </div>

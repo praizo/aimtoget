@@ -83,28 +83,45 @@
 				
         }
 
-        public function listFiles()
+        public function personalFiles($userid)
         {
-        //     $sql = "SELECT users.firstname FROM files WHERE file_type = 'public'
-        //             LEFT JOIN users ON users.id = files.users_id";
+            $sql = "SELECT users.firstname, users.lastname,files.id, files.file_type,files.file_format, files.file_location FROM files 
+            INNER JOIN users ON users.id = files.users_id
+            WHERE users_id = '$userid'";
 
-            
+            $result = $this->conn->query($sql);
 
-        //     $result = $this->conn->query($sql);
+            $items=[];
 
-        //     $items=[];
-        //     if ($result->num_rows > 0) {
-        //         while (  $row = $result->fetch_assoc()) {
-        //                 $items[] = $row;
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $items[] = $row;
+                }
+            } 
+            return $items;
+        }
 
-        //         }
-        //     } 
-        //     return $items;	
+        function viewuser($userid)
+        {
+            $sql = "SELECT users.firstname, users.lastname,files.id, files.file_type,files.file_format, files.file_location FROM files 
+            INNER JOIN users ON users.id = files.users_id
+            WHERE users_id = '$userid' AND files.file_type = 'public'";
+
+            $result = $this->conn->query($sql);
+
+            $items=[];
+
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $items[] = $row;
+                }
+            } 
+            return $items;
         }
         
         function listFilesPublic()
         {
-            $sql = "SELECT users.firstname, users.lastname,files.id, files.file_type,files.file_format, files.file_location FROM files 
+            $sql = "SELECT users.firstname, users.lastname,files.id, files.users_id, files.file_type,files.file_format, files.file_location FROM files 
                     INNER JOIN users ON users.id = files.users_id
                     WHERE file_type = 'public'";
 
@@ -123,7 +140,6 @@
         function downloadFile($path)
         {
             
-
             $file = $path;
 
             if (file_exists($file)) {
@@ -137,7 +153,11 @@
                 ob_clean();
                 flush();
                 readfile($file);
+
+                
                 exit;
+
+                
             }
 
 
@@ -193,6 +213,12 @@
         {
             if (!empty($sharedusers) || !empty($type)) {
 
+                if ($type == 'public') {
+                    $sql = "DELETE FROM sharedusers WHERE file_id = '$fileid'";
+
+                    $result = $this->conn->query($sql);
+                }
+
                 
                 $sql = "UPDATE files SET file_type = '$type' WHERE id = '$fileid'"; 
                 $result = $this->conn->query($sql);
@@ -210,6 +236,8 @@
 
                 if ($result->affected_rows >= 0|| $id > 0) {
                     header("location:profile.php?status=fileupdatesuccess" );
+                } else {
+                    header("location:profile.php?status=fileupdatefailed" );
                 }
             } 
 
@@ -217,12 +245,11 @@
 
         function displaySharedUser($userid, $fileid)
         {
-            $sql = "SELECT users.firstname, users.lastname FROM sharedusers 
-                    INNER JOIN users ON users.id = sharedusers.user_id
-                    WHERE sharedusers.file_id = '$fileid' AND sharedusers.user_id = '$userid'";
+            $sql = "SELECT users.firstname, users.lastname, sharedusers.shareduser_id FROM sharedusers 
+                    INNER JOIN users ON users.id = sharedusers.shareduser_id
+                    WHERE sharedusers.file_id = '$fileid' AND sharedusers.user_id  = '$userid'";
 
-            // echo $sql;
-            // die();
+            
 
             $result = $this->conn->query($sql);
 
@@ -234,6 +261,43 @@
                 }
             } 
             return $items;
+        }
+
+        function removeshareduser($shareduserid, $fileid)
+        {
+            $sql = "DELETE FROM sharedusers WHERE shareduser_id = '$shareduserid' AND file_id = '$fileid'";
+
+            $result = $this->conn->query($sql);
+
+            
+
+            if($result){
+                header("location:edit.php?id=$fileid&status=removalsuccess");
+            }else {
+                header("location:edit.php?id=$fileid&status=removalfailed");
+            }   
+        }
+
+        function displayprivateFiles($userid)
+        {
+            $sql = "SELECT users.firstname, users.lastname, sharedusers.shareduser_id, files.file_type, files.file_format, files.file_location, files.id FROM sharedusers 
+                    INNER JOIN users ON users.id = sharedusers.user_id
+                    INNER JOIN files ON files.id = sharedusers.file_id
+                    WHERE sharedusers.shareduser_id  = '$userid'";
+
+                    // echo $sql;
+                    // die();
+
+                    $result = $this->conn->query($sql);
+
+                    $items=[];
+
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            $items[] = $row;
+                        }
+                    } 
+                    return $items;
         }
 
 

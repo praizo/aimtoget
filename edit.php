@@ -7,36 +7,15 @@ require ("file.php");
 $obj = new User;
 
 $res = new File;
-$files  = $res->editFileView($_GET['id']);
-$fileusers  = $res->displaySharedUser($_SESSION['user'], $_GET['id']);
 
-// print_r($sharedusers);
-// die();
+if (isset($_SESSION['user'])) {
+    $files  = $res->editFileView($_GET['id']);
+    $detail = $obj->getDetail($_SESSION['user']);
+    $users = $obj->users($_SESSION['user']);
+    $sharedusers  = $res->displaySharedUser($_SESSION['user'], $_GET['id']);
+    
+}
 
-$users = $obj->users();
-
-$sharedusers = $obj->sharedusers($_GET['id']);
-
-
-// print_r($files['file_type']);
-// print_r($users);
-
-    // if (isset($_SESSION['user'])) {
-    //     require ("user.php");
-
-    //     // require ("file.php");
-
-    //     $obj = new User;
-
-    //     // $res = new File;
-
-    //     // $lists  = $res->listFilesPublic();
-       
-    //     $users = $obj->users();
-
-    //     print_r($users);
-        
-    // }
 
 ?>
 
@@ -56,23 +35,30 @@ $sharedusers = $obj->sharedusers($_GET['id']);
         <div class="row">
             <div class="col-12">
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                    <a class=" h3 text-secondary" href="#">TEST</a>
+                    <a class=" h3 text-secondary" href="index.php">TEST</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse " id="navbarNav">
                         <ul class="navbar-nav ml-auto">
-                            <li class="nav-item">
-                                <a class="nav-link h5 text-primary" href="#">Files</a>
-                            </li>
 
+                            <?php if (isset($_SESSION['user'])) { ?>
+                            <li class="nav-item">
+                                <a class=" btn btn-primary" href="profile.php">Welcome,
+                                    <?php echo ucfirst($detail['firstname']) ?></a>
+                            </li>
+                            <li class="nav-item mx-2">
+                                <a class=" btn btn-outline-primary" href="logout.php">Logout</a>
+                            </li>
+                            <?php } else {?>
                             <li class="nav-item">
                                 <a class=" btn btn-primary" href="register.php">Register</a>
                             </li>
                             <li class="nav-item mx-2">
                                 <a class=" btn btn-outline-primary" href="login.php">Login</a>
                             </li>
+                            <?php } ?>
 
                         </ul>
                     </div>
@@ -136,7 +122,7 @@ $sharedusers = $obj->sharedusers($_GET['id']);
                     <div class="col-6 mx-auto border p-3 my-2 shadow-sm ">
                         <h3>Shared Users</h3>
                         <hr>
-                        <?php if (!empty($fileusers)) { ?>
+                        <?php if (!empty($sharedusers)) { ?>
                         <table class="table">
                             <thead class="thead-dark">
                                 <tr>
@@ -146,12 +132,12 @@ $sharedusers = $obj->sharedusers($_GET['id']);
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $i=1; foreach ($fileusers as $key => $fileuser) {  ?>
+                                <?php $i=1; foreach ($sharedusers as $key => $shareduser) {  ?>
                                 <tr>
                                     <th scope="row"><?php echo $i++; ?></th>
-                                    <td><?php echo ucfirst($fileuser['firstname'] . ' ' . ucfirst($fileuser['lastname'])) ?>
+                                    <td><?php echo ucfirst($shareduser['firstname'] . ' ' . ucfirst($shareduser['lastname'])) ?>
                                     </td>
-                                    <td><a href="removeshareduser.php?id=<?php echo $list['id']; ?>"
+                                    <td><a href="removeshareduser.php?fileid=<?php echo $_GET['id'] ?>&shareduserid=<?php echo $shareduser['shareduser_id'] ?>"
                                             class="btn btn-outline-info">Remove</a></td>
 
                                 </tr>

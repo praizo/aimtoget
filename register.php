@@ -18,7 +18,7 @@
             <div class="col-12">
 
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                    <a class=" h3 text-secondary" href="#">TEST</a>
+                    <a class=" h3 text-secondary" href="index.php">TEST</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>

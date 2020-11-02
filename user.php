@@ -61,9 +61,9 @@
             return $row;
         }
 
-        function users()
+        function users($userid)
         {
-            $sql = "SELECT * FROM users";
+            $sql = "SELECT * FROM users WHERE id != $userid";
             $result = $this->conn->query($sql);
 
             $items=[];

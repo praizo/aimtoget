@@ -130,11 +130,11 @@
                     </thead>
                     <tbody>
                         <?php                     
-                        
+                        $i = 1;
                         foreach ($lists as $key => $list) {?>
                         <tr>
-                            <th scope="row">1</th>
-                            <td><?php echo ucfirst($list['firstname'] . ' ' . ucfirst($list['lastname'])) ?></td>
+                            <th scope="row"><?php echo $i++; ?></th>
+                            <td><a href="profile.php?id=<?php echo $list["users_id"]?>"><?php echo ucfirst($list['firstname'] . ' ' . ucfirst($list['lastname'])) ?></a></td>
                             <td><?php echo ucfirst($list['file_format']) ?></td>
                             <td>
                                 <span class="badge badge-info"><?php echo ucfirst($list['file_type']) ?></span>
@@ -142,13 +142,7 @@
                             <td>
                                 <a href="downloadflow.php?location=<?php echo $list["file_location"]?>"
                                     onclick="return confirm('Are you sure?')" class="btn btn-success">Download</a>
-                                <?php if(isset($_SESSION['user'])) {?>
-
-                                <a href="edit.php?id=<?php echo $list['id']; ?>" class="btn btn-outline-info">Edit</a>
-
-                                <a href="deleteflow.php?id=<?php echo $list['id'] ?>&location=<?php echo $list["file_location"]?>"
-                                    onclick="return confirm('Are you sure?')" class="btn btn-outline-danger">Delete</a>
-                                <?php }?>
+                                
                             </td>
                         </tr>
 
