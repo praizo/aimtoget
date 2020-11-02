@@ -152,10 +152,10 @@
                     </thead>
                     <tbody>
                         <?php                     
-                        
+                        $i =1;
                         foreach ($viewuserfiles as $key => $viewuserfile) {?>
                         <tr>
-                            <th scope="row">1</th>
+                            <th scope="row"><?php echo $i++; ?></th>
                             <td><?php echo ucfirst($viewuserfile['firstname'] . ' ' . ucfirst($viewuserfile['lastname'])) ?>
                             </td>
                             <td><?php echo ucfirst($viewuserfile['file_format']) ?></td>
@@ -205,10 +205,10 @@
                     </thead>
                     <tbody>
                         <?php                     
-                        
+                        $i =1;
                         foreach ($viewuserfiles as $key => $viewuserfile) {?>
                         <tr>
-                            <th scope="row">1</th>
+                            <th scope="row"><?php echo $i++; ?></th>
                             <td> <?php echo ucfirst($viewuserfile['firstname'] . ' ' . ucfirst($viewuserfile['lastname'])) ?>
                             </td>
                             <td><?php echo ucfirst($viewuserfile['file_format']) ?></td>
@@ -259,10 +259,10 @@
                     </thead>
                     <tbody>
                         <?php                     
-                        
+                        $i =1;
                         foreach ($privatefiles as $key => $privatefile) {?>
                         <tr>
-                            <th scope="row">1</th>
+                            <th scope="row"><?php echo $i++; ?></th>
                             <td><?php echo ucfirst($privatefile['firstname'] . ' ' . ucfirst($privatefile['lastname'])) ?>
                             </td>
                             <td><?php echo ucfirst($privatefile['file_format']) ?></td>
@@ -307,10 +307,10 @@
                     </thead>
                     <tbody>
                         <?php                     
-                        
+                        $i =1;
                         foreach ($personalFiles as $key => $personalFile) {?>
                         <tr>
-                            <th scope="row">1</th>
+                            <th scope="row"><?php echo $i++; ?></th>
                             <td><?php echo ucfirst($personalFile['firstname'] . ' ' . ucfirst($personalFile['lastname'])) ?>
                             </td>
                             <td><?php echo ucfirst($personalFile['file_format']) ?></td>
