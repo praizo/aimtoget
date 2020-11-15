@@ -167,25 +167,22 @@
         {
             $path = "uploads/" . $location;
 
-            echo $path;
+            unlink($path);
+
+
+            $sql = "DELETE FROM files WHERE id = '$id'";
+
+            $result = $this->conn->query($sql);
+
+
 
            
-            if ( unlink($path)) {
-                $sql = "DELETE FROM files WHERE id = '$id'";
-
-                $result = $this->conn->query($sql);
-
-                if($result){
-                    header("location:index.php?status='deleted'");
-                }else {
-                    header("location:index.php?status='deletefailed'");
-                }   
-                
-
-            }
-
-            
-
+            if ($result == true) {
+                header("location:profile.php?status='deleted'");
+            }else {
+                header("location:profile.php?status='deletefailed'");
+            }                 
+           
 
         }
 
